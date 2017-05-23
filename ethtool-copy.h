@@ -10,14 +10,16 @@
  * Portions Copyright (C) Sun Microsystems 2008
  */
 
-#ifndef _LINUX_ETHTOOL_H
-#define _LINUX_ETHTOOL_H
+#ifndef _UAPI_LINUX_ETHTOOL_H
+#define _UAPI_LINUX_ETHTOOL_H
 
 #include <linux/kernel.h>
 #include <linux/types.h>
 #include <linux/if_ether.h>
 
+#ifndef __KERNEL__
 #include <limits.h> /* for INT_MAX */
+#endif
 
 /* All structures exposed to userland should be defined such that they
  * have the same layout for 32-bit and 64-bit userland.
@@ -114,14 +116,14 @@ struct ethtool_cmd {
 	__u32	reserved[2];
 };
 
-static __inline__ void ethtool_cmd_speed_set(struct ethtool_cmd *ep,
+static inline void ethtool_cmd_speed_set(struct ethtool_cmd *ep,
 					 __u32 speed)
 {
 	ep->speed = (__u16)(speed & 0xFFFF);
 	ep->speed_hi = (__u16)(speed >> 16);
 }
 
-static __inline__ __u32 ethtool_cmd_speed(const struct ethtool_cmd *ep)
+static inline __u32 ethtool_cmd_speed(const struct ethtool_cmd *ep)
 {
 	return (ep->speed_hi << 16) | ep->speed;
 }
@@ -257,6 +259,47 @@ enum phy_tunable_id {
 	 * phy_tunable_strings[] in net/core/ethtool.c
 	 */
 	__ETHTOOL_PHY_TUNABLE_COUNT,
+};
+
+enum ethtool_cable_pair_status {
+	ETHTOOL_CABLE_PAIR_STATUS_NOT_TESTED,
+	ETHTOOL_CABLE_PAIR_STATUS_GOOD,
+	ETHTOOL_CABLE_PAIR_STATUS_SHORT,
+	ETHTOOL_CABLE_PAIR_STATUS_OPEN,
+	ETHTOOL_CABLE_PAIR_STATUS_BROKEN,
+	__ETHTOOL_CABLE_PAIR_TSTATUS_COUNT,
+};
+
+/**
+ * struct ethtool_pair_diags - per-pair cable diagnostics
+ * @status: Pair status = %ethtool_cable_status
+ * @version: Indicates cable diagnostics version
+ * @distance: Cable distance in meters
+ */
+struct ethtool_pair_diags {
+	enum ethtool_cable_pair_status status;
+	__u32 version;
+	u8 distance;
+};
+
+enum ethtool_cable_action {
+	ETHTOOL_CABLE_ACTION_RUN,
+	ETHTOOL_CABLE_ACTION_STOP,
+	__ETHTOOL_CABLE_ACTION_COUNT,
+};
+
+/**
+ * struct ethtool_cable_diags - cable diagnostics dump
+ * @cmd: Command number = %ETHTOOL_GCABLEDIAGS or %ETHTOOL_SCABLEDIAGS
+ * @action: Action to perform
+ * @pairs_mask: Target a specific set of pairs
+ * @pairs: per-pair cable diagnostics
+ */
+struct ethtool_cable_diags {
+	__u32	cmd;
+	__u32	action;
+	u8	pairs_mask;
+	struct ethtool_pair_diags pairs_status[4];
 };
 
 /**
@@ -892,12 +935,12 @@ struct ethtool_rx_flow_spec {
 #define ETHTOOL_RX_FLOW_SPEC_RING	0x00000000FFFFFFFFLL
 #define ETHTOOL_RX_FLOW_SPEC_RING_VF	0x000000FF00000000LL
 #define ETHTOOL_RX_FLOW_SPEC_RING_VF_OFF 32
-static __inline__ __u64 ethtool_get_flow_spec_ring(__u64 ring_cookie)
+static inline __u64 ethtool_get_flow_spec_ring(__u64 ring_cookie)
 {
 	return ETHTOOL_RX_FLOW_SPEC_RING & ring_cookie;
 };
 
-static __inline__ __u64 ethtool_get_flow_spec_ring_vf(__u64 ring_cookie)
+static inline __u64 ethtool_get_flow_spec_ring_vf(__u64 ring_cookie)
 {
 	return (ETHTOOL_RX_FLOW_SPEC_RING_VF & ring_cookie) >>
 				ETHTOOL_RX_FLOW_SPEC_RING_VF_OFF;
@@ -1328,6 +1371,8 @@ struct ethtool_per_queue_op {
 #define ETHTOOL_SLINKSETTINGS	0x0000004d /* Set ethtool_link_settings */
 #define ETHTOOL_PHY_GTUNABLE	0x0000004e /* Get PHY tunable configuration */
 #define ETHTOOL_PHY_STUNABLE	0x0000004f /* Set PHY tunable configuration */
+#define ETHTOOL_GCABLEDIAGS	0x00000050 /* Get ethtool cable diagnostics */
+#define ETHTOOL_SCABLEDIAGS	0x00000051 /* Set ethtool cable diagnostics */
 
 /* compatibility with older code */
 #define SPARC_ETH_GSET		ETHTOOL_GSET
@@ -1382,8 +1427,8 @@ enum ethtool_link_mode_bit_indices {
 	ETHTOOL_LINK_MODE_10000baseLR_Full_BIT	= 44,
 	ETHTOOL_LINK_MODE_10000baseLRM_Full_BIT	= 45,
 	ETHTOOL_LINK_MODE_10000baseER_Full_BIT	= 46,
-	ETHTOOL_LINK_MODE_2500baseT_Full_BIT = 47,
-	ETHTOOL_LINK_MODE_5000baseT_Full_BIT = 48,
+	ETHTOOL_LINK_MODE_2500baseT_Full_BIT	= 47,
+	ETHTOOL_LINK_MODE_5000baseT_Full_BIT	= 48,
 
 
 	/* Last allowed bit for __ETHTOOL_LINK_MODE_LEGACY_MASK is bit
@@ -1485,6 +1530,7 @@ enum ethtool_link_mode_bit_indices {
  */
 
 /* The forced speed, in units of 1Mb. All values 0 to INT_MAX are legal. */
+/* Update drivers/net/phy/phy.c:phy_speed_to_str() when adding new values */
 #define SPEED_10		10
 #define SPEED_100		100
 #define SPEED_1000		1000
@@ -1500,7 +1546,7 @@ enum ethtool_link_mode_bit_indices {
 
 #define SPEED_UNKNOWN		-1
 
-static __inline__ int ethtool_validate_speed(__u32 speed)
+static inline int ethtool_validate_speed(__u32 speed)
 {
 	return speed <= INT_MAX || speed == SPEED_UNKNOWN;
 }
@@ -1510,7 +1556,7 @@ static __inline__ int ethtool_validate_speed(__u32 speed)
 #define DUPLEX_FULL		0x01
 #define DUPLEX_UNKNOWN		0xff
 
-static __inline__ int ethtool_validate_duplex(__u8 duplex)
+static inline int ethtool_validate_duplex(__u8 duplex)
 {
 	switch (duplex) {
 	case DUPLEX_HALF:
@@ -1760,4 +1806,4 @@ struct ethtool_link_settings {
 	 * __u32 map_lp_advertising[link_mode_masks_nwords];
 	 */
 };
-#endif /* _LINUX_ETHTOOL_H */
+#endif /* _UAPI_LINUX_ETHTOOL_H */

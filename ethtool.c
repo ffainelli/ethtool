@@ -4631,6 +4631,101 @@ static int do_get_phy_tunable(struct cmd_context *ctx)
 	return err;
 }
 
+static const char *pair_status_to_str(enum ethtool_cable_pair_status status)
+{
+	switch (status) {
+	case ETHTOOL_CABLE_PAIR_STATUS_NOT_TESTED:
+		return "not tested";
+	case ETHTOOL_CABLE_PAIR_STATUS_GOOD:
+		return "good";
+	case ETHTOOL_CABLE_PAIR_STATUS_SHORT:
+		return "short";
+	case ETHTOOL_CABLE_PAIR_STATUS_OPEN:
+		return "open";
+	case ETHTOOL_CABLE_PAIR_STATUS_BROKEN:
+		return "broken";
+	default:
+		return "unknown";
+	}
+}
+
+static void cable_diags_print_pair(unsigned int i,
+				   struct ethtool_pair_diags *pair)
+{
+	fprintf(stdout,
+		"\tPair: %d\n"
+		"\t\tstatus: %s\n",
+		i, pair_status_to_str(pair->status));
+
+	if (pair->status != ETHTOOL_CABLE_PAIR_STATUS_NOT_TESTED)
+		fprintf(stdout, "\t\tdistance: %dm\n", pair->distance);
+}
+
+static int do_get_cable_diags(struct cmd_context *ctx)
+{
+	struct ethtool_cable_diags diags = { };
+	unsigned int i;
+	int err;
+
+	diags.cmd = ETHTOOL_GCABLEDIAGS;
+
+	err = send_ioctl(ctx, &diags);
+	if (err < 0) {
+		perror("Cannot get cable diagnostics");
+		return 1;
+	}
+
+	fprintf(stdout, "Cable diagnostics results:\n");
+	for (i = 0; i < ARRAY_SIZE(diags.pairs_status); i++)
+		cable_diags_print_pair(i, &diags.pairs_status[i]);
+
+	return 0;
+}
+
+static int do_set_cable_diags(struct cmd_context *ctx)
+{
+	struct ethtool_cable_diags diags;
+	char *action;
+	u8 pairs_mask;
+	int change = -1;
+	struct cmdline_info cmdline_cable_diags[] = {
+		{ "action", CMDL_STR, &action, NULL },
+		{ "pairs-mask", CMDL_U8, &pairs_mask, NULL },
+	};
+	int err;
+
+	if (ctx->argc == 0)
+		exit_bad_args();
+
+	parse_generic_cmdline(ctx, &change, cmdline_cable_diags,
+			      ARRAY_SIZE(cmdline_cable_diags));
+
+	if (pairs_mask == 0 || pairs_mask > 0xf) {
+		fprintf(stderr, "Invalid pairs-mask\n");
+		return 1;
+	}
+
+	if (strcmp(action, "run") && strcmp(action, "stop")) {
+		fprintf(stderr, "Invalid action\n");
+		return 1;
+	}
+
+	diags.cmd = ETHTOOL_SCABLEDIAGS;
+	if (!strcmp(action, "run"))
+		diags.action = ETHTOOL_CABLE_ACTION_RUN;
+	if (!strcmp(action, "stop"))
+		diags.action = ETHTOOL_CABLE_ACTION_STOP;
+	diags.pairs_mask = pairs_mask;
+
+	err = send_ioctl(ctx, &diags);
+	if (err < 0) {
+		perror("Cannot set cable diagnostics parameters");
+		return 87;
+	}
+
+	return 0;
+}
+
 static int parse_named_bool(struct cmd_context *ctx, const char *name, u8 *on)
 {
 	if (ctx->argc < 2)
@@ -4893,6 +4988,10 @@ static const struct option {
 	  "		[ downshift on|off [count N] ]\n"},
 	{ "--get-phy-tunable", 1, do_get_phy_tunable, "Get PHY tunable",
 	  "		[ downshift ]\n"},
+	{ "--set-cable-diags", 1, do_set_cable_diags, "Set cable diagnostics",
+	  "		[ action %s ]\n"
+	  "		[ pair_mask %x ]\n" },
+	{ "--get-cable-diags", 1, do_get_cable_diags, "Get cable diagnostics" },
 	{ "-h|--help", 0, show_usage, "Show this help" },
 	{ "--version", 0, do_version, "Show version number" },
 	{}
