@@ -272,13 +272,13 @@ enum ethtool_cable_pair_status {
 
 /**
  * struct ethtool_pair_diags - per-pair cable diagnostics
- * @status: Pair status = %ethtool_cable_status
  * @version: Indicates cable diagnostics version
+ * @status: Pair status = %ethtool_cable_status
  * @distance: Cable distance in meters
  */
 struct ethtool_pair_diags {
-	enum ethtool_cable_pair_status status;
 	__u32 version;
+	enum ethtool_cable_pair_status status;
 	u8 distance;
 };
 
@@ -288,18 +288,20 @@ enum ethtool_cable_action {
 	__ETHTOOL_CABLE_ACTION_COUNT,
 };
 
+#define ETHTOOL_CABLE_DIAGS_NUM_PAIRS	4
+
 /**
  * struct ethtool_cable_diags - cable diagnostics dump
  * @cmd: Command number = %ETHTOOL_GCABLEDIAGS or %ETHTOOL_SCABLEDIAGS
  * @action: Action to perform
- * @pairs_mask: Target a specific set of pairs
- * @pairs: per-pair cable diagnostics
+ * @pairs_mask: Target a specific set of pairs (0-0xf)
+ * @pairs_status: Per-pair cable diagnostics results
  */
 struct ethtool_cable_diags {
 	__u32	cmd;
 	__u32	action;
 	u8	pairs_mask;
-	struct ethtool_pair_diags pairs_status[4];
+	struct ethtool_pair_diags pairs_status[ETHTOOL_CABLE_DIAGS_NUM_PAIRS];
 };
 
 /**
@@ -1279,6 +1281,47 @@ struct ethtool_per_queue_op {
 	char	data[];
 };
 
+/**
+ * struct ethtool_fecparam - Ethernet forward error correction(fec) parameters
+ * @cmd: Command number = %ETHTOOL_GFECPARAM or %ETHTOOL_SFECPARAM
+ * @active_fec: FEC mode which is active on porte
+ * @fec: Bitmask of supported/configured FEC modes
+ * @rsvd: Reserved for future extensions. i.e FEC bypass feature.
+ *
+ * Drivers should reject a non-zero setting of @autoneg when
+ * autoneogotiation is disabled (or not supported) for the link.
+ *
+ */
+struct ethtool_fecparam {
+	__u32   cmd;
+	/* bitmask of FEC modes */
+	__u32   active_fec;
+	__u32   fec;
+	__u32   reserved;
+};
+
+/**
+ * enum ethtool_fec_config_bits - flags definition of ethtool_fec_configuration
+ * @ETHTOOL_FEC_NONE: FEC mode configuration is not supported
+ * @ETHTOOL_FEC_AUTO: Default/Best FEC mode provided by driver
+ * @ETHTOOL_FEC_OFF: No FEC Mode
+ * @ETHTOOL_FEC_RS: Reed-Solomon Forward Error Detection mode
+ * @ETHTOOL_FEC_BASER: Base-R/Reed-Solomon Forward Error Detection mode
+ */
+enum ethtool_fec_config_bits {
+	ETHTOOL_FEC_NONE_BIT,
+	ETHTOOL_FEC_AUTO_BIT,
+	ETHTOOL_FEC_OFF_BIT,
+	ETHTOOL_FEC_RS_BIT,
+	ETHTOOL_FEC_BASER_BIT,
+};
+
+#define ETHTOOL_FEC_NONE		(1 << ETHTOOL_FEC_NONE_BIT)
+#define ETHTOOL_FEC_AUTO		(1 << ETHTOOL_FEC_AUTO_BIT)
+#define ETHTOOL_FEC_OFF			(1 << ETHTOOL_FEC_OFF_BIT)
+#define ETHTOOL_FEC_RS			(1 << ETHTOOL_FEC_RS_BIT)
+#define ETHTOOL_FEC_BASER		(1 << ETHTOOL_FEC_BASER_BIT)
+
 /* CMDs currently supported */
 #define ETHTOOL_GSET		0x00000001 /* DEPRECATED, Get settings.
 					    * Please use ETHTOOL_GLINKSETTINGS
@@ -1371,8 +1414,10 @@ struct ethtool_per_queue_op {
 #define ETHTOOL_SLINKSETTINGS	0x0000004d /* Set ethtool_link_settings */
 #define ETHTOOL_PHY_GTUNABLE	0x0000004e /* Get PHY tunable configuration */
 #define ETHTOOL_PHY_STUNABLE	0x0000004f /* Set PHY tunable configuration */
-#define ETHTOOL_GCABLEDIAGS	0x00000050 /* Get ethtool cable diagnostics */
-#define ETHTOOL_SCABLEDIAGS	0x00000051 /* Set ethtool cable diagnostics */
+#define ETHTOOL_GFECPARAM	0x00000050 /* Get FEC settings */
+#define ETHTOOL_SFECPARAM	0x00000051 /* Set FEC settings */
+#define ETHTOOL_GCABLEDIAGS	0x00000052 /* Get ethtool cable diagnostics */
+#define ETHTOOL_SCABLEDIAGS	0x00000053 /* Set ethtool cable diagnostics */
 
 /* compatibility with older code */
 #define SPARC_ETH_GSET		ETHTOOL_GSET
@@ -1430,6 +1475,9 @@ enum ethtool_link_mode_bit_indices {
 	ETHTOOL_LINK_MODE_2500baseT_Full_BIT	= 47,
 	ETHTOOL_LINK_MODE_5000baseT_Full_BIT	= 48,
 
+	ETHTOOL_LINK_MODE_FEC_NONE_BIT	= 49,
+	ETHTOOL_LINK_MODE_FEC_RS_BIT	= 50,
+	ETHTOOL_LINK_MODE_FEC_BASER_BIT	= 51,
 
 	/* Last allowed bit for __ETHTOOL_LINK_MODE_LEGACY_MASK is bit
 	 * 31. Please do NOT define any SUPPORTED_* or ADVERTISED_*
@@ -1438,7 +1486,7 @@ enum ethtool_link_mode_bit_indices {
 	 */
 
 	__ETHTOOL_LINK_MODE_LAST
-	  = ETHTOOL_LINK_MODE_5000baseT_Full_BIT,
+	  = ETHTOOL_LINK_MODE_FEC_BASER_BIT,
 };
 
 #define __ETHTOOL_LINK_MODE_LEGACY_MASK(base_name)	\
@@ -1529,14 +1577,17 @@ enum ethtool_link_mode_bit_indices {
  * it was forced up into this mode or autonegotiated.
  */
 
-/* The forced speed, in units of 1Mb. All values 0 to INT_MAX are legal. */
-/* Update drivers/net/phy/phy.c:phy_speed_to_str() when adding new values */
+/* The forced speed, in units of 1Mb. All values 0 to INT_MAX are legal.
+ * Update drivers/net/phy/phy.c:phy_speed_to_str() and
+ * drivers/net/bonding/bond_3ad.c:__get_link_speed() when adding new values.
+ */
 #define SPEED_10		10
 #define SPEED_100		100
 #define SPEED_1000		1000
 #define SPEED_2500		2500
 #define SPEED_5000		5000
 #define SPEED_10000		10000
+#define SPEED_14000		14000
 #define SPEED_20000		20000
 #define SPEED_25000		25000
 #define SPEED_40000		40000
