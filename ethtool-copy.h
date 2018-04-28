@@ -572,6 +572,7 @@ enum ethtool_stringset {
 	ETH_SS_TUNABLES,
 	ETH_SS_PHY_STATS,
 	ETH_SS_PHY_TUNABLES,
+	ETH_SS_PHY_TESTS,
 };
 
 /**
@@ -1296,6 +1297,25 @@ enum ethtool_fec_config_bits {
 #define ETHTOOL_FEC_RS			(1 << ETHTOOL_FEC_RS_BIT)
 #define ETHTOOL_FEC_BASER		(1 << ETHTOOL_FEC_BASER_BIT)
 
+/**
+ * struct ethtool_phy_test - Ethernet PHY test mode
+ * @cmd: Command number = %ETHTOOL_GPHYTEST or %ETHTOOL_SPHYTEST
+ * @flags: A bitmask of flags from &enum ethtool_test_flags.  Some
+ *      flags may be set by the user on entry; others may be set by
+ *      the driver on return.
+ * @mode: PHY test mode to enter. The index should be a valid test mode
+ * obtained through ethtool_get_strings with %ETH_SS_PHY_TESTS
+ * @len: The length of the test specific array @data
+ * @data: Array of test specific results to be interpreted with @mode
+ */
+struct ethtool_phy_test {
+        __u32   cmd;
+        __u32   flags;
+        __u32   mode;
+        __u32   len;
+        __u8    data[0];
+};
+
 /* CMDs currently supported */
 #define ETHTOOL_GSET		0x00000001 /* DEPRECATED, Get settings.
 					    * Please use ETHTOOL_GLINKSETTINGS
@@ -1390,6 +1410,9 @@ enum ethtool_fec_config_bits {
 #define ETHTOOL_PHY_STUNABLE	0x0000004f /* Set PHY tunable configuration */
 #define ETHTOOL_GFECPARAM	0x00000050 /* Get FEC settings */
 #define ETHTOOL_SFECPARAM	0x00000051 /* Set FEC settings */
+
+#define ETHTOOL_GPHYTEST        0x00000052 /* Get PHY test mode(s) */
+#define ETHTOOL_SPHYTEST        0x00000053 /* Set PHY test mode */
 
 /* compatibility with older code */
 #define SPARC_ETH_GSET		ETHTOOL_GSET
