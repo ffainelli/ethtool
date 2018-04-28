@@ -4854,6 +4854,118 @@ static int do_reset(struct cmd_context *ctx)
 	return 0;
 }
 
+static int do_gphytest(struct cmd_context *ctx)
+{
+	struct ethtool_gstrings *strings;
+	struct ethtool_phy_test test;
+	unsigned int i;
+	int max_len = 0, cur_len, rc;
+
+	if (ctx->argc != 0)
+		exit_bad_args();
+
+	strings = get_stringset(ctx, ETH_SS_PHY_TESTS, 0, 1);
+	if (!strings) {
+		perror("Cannot get PHY tests strings");
+		return 1;
+	}
+	if (strings->len == 0) {
+		fprintf(stderr, "No PHY tests defined\n");
+		rc = 1;
+		goto err;
+	}
+
+	/* Find longest string and align all strings accordingly */
+	for (i = 0; i < strings->len; i++) {
+		cur_len = strlen((const char*)strings->data +
+				 i * ETH_GSTRING_LEN);
+		if (cur_len > max_len)
+			max_len = cur_len;
+	}
+
+	printf("PHY tests %s:\n", ctx->devname);
+	for (i = 0; i < strings->len; i++) {
+		memset(&test, 0, sizeof(test));
+		test.cmd = ETHTOOL_GPHYTEST;
+		test.mode = i;
+
+		rc = send_ioctl(ctx, &test);
+		if (rc < 0)
+			continue;
+
+		fprintf(stdout, "     %.*s (Test data: %s)\n",
+		       max_len,
+		       (const char *)strings->data + i * ETH_GSTRING_LEN,
+		       test.len ? "Yes" : "No");
+	}
+
+	rc = 0;
+
+err:
+	free(strings);
+	return rc;
+}
+
+static int do_sphytest(struct cmd_context *ctx)
+{
+	struct ethtool_gstrings *strings;
+	struct ethtool_phy_test gtest;
+	struct ethtool_phy_test *stest;
+	unsigned int i;
+	int rc;
+
+	if (ctx->argc < 1)
+		exit_bad_args();
+
+	strings = get_stringset(ctx, ETH_SS_PHY_TESTS, 0, 1);
+	if (!strings) {
+		perror("Cannot get PHY test modes");
+		return 1;
+	}
+
+	if (strings->len == 0) {
+		fprintf(stderr, "No PHY tests defined\n");
+		rc = 1;
+		goto err;
+	}
+
+	for (i = 0; i < strings->len; i++) {
+		if (!strcmp(ctx->argp[0],
+			    (const char *)strings->data + i * ETH_GSTRING_LEN))
+			break;
+	}
+
+	if (i == strings->len)
+		exit_bad_args();
+
+	memset(&gtest, 0, sizeof(gtest));
+	gtest.cmd = ETHTOOL_GPHYTEST;
+	gtest.mode = i;
+	rc = send_ioctl(ctx, &gtest);
+	if (rc < 0) {
+		rc = 1;
+		goto err;
+	}
+
+	stest = calloc(1, sizeof(*stest) + gtest.len);
+	if (!stest) {
+		perror("Unable to allocate memory");
+		rc = 1;
+		goto err;
+	}
+
+	stest->cmd = ETHTOOL_SPHYTEST;
+	stest->len = gtest.len;
+	stest->mode = i;
+
+	rc = send_ioctl(ctx, stest);
+	free(stest);
+err:
+	free(strings);
+	return rc;
+}
+
+
 static int parse_named_bool(struct cmd_context *ctx, const char *name, u8 *on)
 {
 	if (ctx->argc < 2)
@@ -5223,6 +5335,9 @@ static const struct option {
 	{ "--show-fec", 1, do_gfec, "Show FEC settings"},
 	{ "--set-fec", 1, do_sfec, "Set FEC settings",
 	  "		[ encoding auto|off|rs|baser ]\n"},
+	{ "--get-phy-tests", 1, do_gphytest,"Get PHY test mode(s)" },
+	{ "--set-phy-test", 1, do_sphytest, "Set PHY test mode",
+	  "		[ test options ]\n" },
 	{ "-h|--help", 0, show_usage, "Show this help" },
 	{ "--version", 0, do_version, "Show version number" },
 	{}
