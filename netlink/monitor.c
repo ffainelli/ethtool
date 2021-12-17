@@ -182,6 +182,10 @@ static struct monitor_option monitor_opts[] = {
 		.pattern	= "--cable-test-tdr",
 		.cmd		= ETHTOOL_MSG_CABLE_TEST_TDR_NTF,
 	},
+	{
+		.pattern	= "--show-module|--set-module",
+		.cmd		= ETHTOOL_MSG_MODULE_NTF,
+	},
 };
 
 static bool pattern_match(const char *s, const char *pattern)
