@@ -71,6 +71,10 @@ static struct {
 		.cmd	= ETHTOOL_MSG_FEC_NTF,
 		.cb	= fec_reply_cb,
 	},
+	{
+		.cmd	= ETHTOOL_MSG_MODULE_NTF,
+		.cb	= module_reply_cb,
+	},
 };
 
 static void clear_filter(struct nl_context *nlctx)
@@ -177,6 +181,10 @@ static struct monitor_option monitor_opts[] = {
 	{
 		.pattern	= "--cable-test-tdr",
 		.cmd		= ETHTOOL_MSG_CABLE_TEST_TDR_NTF,
+	},
+	{
+		.pattern	= "--show-module|--set-module",
+		.cmd		= ETHTOOL_MSG_MODULE_NTF,
 	},
 };
 
