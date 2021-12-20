@@ -46,6 +46,7 @@ int rings_reply_cb(const struct nlmsghdr *nlhdr, void *data)
 	show_u32(tb[ETHTOOL_A_RINGS_RX_MINI], "RX Mini:\t");
 	show_u32(tb[ETHTOOL_A_RINGS_RX_JUMBO], "RX Jumbo:\t");
 	show_u32(tb[ETHTOOL_A_RINGS_TX], "TX:\t\t");
+	show_u32(tb[ETHTOOL_A_RINGS_RX_BUF_LEN], "RX Buf Len:\t\t");
 
 	return MNL_CB_OK;
 }
@@ -97,6 +98,12 @@ static const struct param_parser sring_params[] = {
 		.type		= ETHTOOL_A_RINGS_TX,
 		.handler	= nl_parse_direct_u32,
 		.min_argc	= 1,
+	},
+	{
+		.arg            = "rx-buf-len",
+		.type           = ETHTOOL_A_RINGS_RX_BUF_LEN,
+		.handler        = nl_parse_direct_u32,
+		.min_argc       = 1,
 	},
 	{}
 };

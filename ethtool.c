@@ -5724,6 +5724,7 @@ static const struct option args[] = {
 			  "		[ rx-mini N ]\n"
 			  "		[ rx-jumbo N ]\n"
 			  "		[ tx N ]\n"
+			  "             [ rx-buf-len N]\n"
 	},
 	{
 		.opts	= "-k|--show-features|--show-offload",
