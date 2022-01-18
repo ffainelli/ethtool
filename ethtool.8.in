@@ -198,6 +198,7 @@ ethtool \- query or control network driver and hardware settings
 .BN rx\-mini
 .BN rx\-jumbo
 .BN tx
+.BN rx\-buf\-len
 .HP
 .B ethtool \-i|\-\-driver
 .I devname
@@ -417,12 +418,14 @@ ethtool \- query or control network driver and hardware settings
 .I devname
 .RB [ rx-copybreak ]
 .RB [ tx-copybreak ]
+.RB [ tx-buf-size ]
 .RB [ pfc-prevention-tout ]
 .HP
 .B ethtool \-\-set\-tunable
 .I devname
 .BN rx\-copybreak
 .BN tx\-copybreak
+.BN tx\-buf\-size
 .BN pfc\-prevention\-tout
 .HP
 .B ethtool \-\-reset
@@ -477,6 +480,14 @@ ethtool \- query or control network driver and hardware settings
 .HP
 .B ethtool \-\-show\-tunnels
 .I devname
+.HP
+.B ethtool \-\-show\-module
+.I devname
+.HP
+.B ethtool \-\-set\-module
+.I devname
+.RB [ power\-mode\-policy
+.BR high | auto ]
 .
 .\" Adjust lines (i.e. full justification) and hyphenate.
 .ad
@@ -559,6 +570,9 @@ Changes the number of ring entries for the Rx Jumbo ring.
 .TP
 .BI tx \ N
 Changes the number of ring entries for the Tx ring.
+.TP
+.BI rx\-buf\-len \ N
+Changes the size of a buffer in the Rx ring.
 .RE
 .TP
 .B \-i \-\-driver
@@ -1306,6 +1320,9 @@ Get the current rx copybreak value in bytes.
 .B tx\-copybreak
 Get the current tx copybreak value in bytes.
 .TP
+.B tx\-buf\-size
+Get the current tx copybreak buffer size in bytes.
+.TP
 .B pfc\-prevention\-tout
 Get the current pfc prevention timeout value in msecs.
 .RE
@@ -1319,6 +1336,9 @@ Set the rx copybreak value in bytes.
 .TP
 .BI tx\-copybreak \ N
 Set the tx copybreak value in bytes.
+.TP
+.BI tx\-buf\-size \ N
+Set the tx copybreak buffer size in bytes.
 .TP
 .BI pfc\-prevention\-tout \ N
 Set pfc prevention timeout in msecs. Value of 0 means disable and 65535 means auto.
@@ -1459,6 +1479,23 @@ shown. Default is to show notifications for all devices.
 Show tunnel-related device capabilities and state.
 List UDP ports kernel has programmed the device to parse as VxLAN,
 or GENEVE tunnels.
+.RE
+.TP
+.B \-\-show\-module
+Show the transceiver module's parameters.
+.RE
+.TP
+.B \-\-set\-module
+Set the transceiver module's parameters.
+.RS 4
+.TP
+.A2 power-mode-policy high auto
+Set the power mode policy for the module. When set to \fBhigh\fR, the module
+always operates at high power mode. When set to \fBauto\fR, the module is
+transitioned by the host to high power mode when the first port using it is put
+administratively up and to low power mode when the last port using it is put
+administratively down. The power mode policy can be set before a module is
+plugged-in.
 .RE
 .SH BUGS
 Not supported (in part or whole) on all network drivers.

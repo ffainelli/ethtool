@@ -5009,6 +5009,7 @@ tunable_strings[__ETHTOOL_TUNABLE_COUNT][ETH_GSTRING_LEN] = {
 	[ETHTOOL_ID_UNSPEC]		= "Unspec",
 	[ETHTOOL_RX_COPYBREAK]		= "rx-copybreak",
 	[ETHTOOL_TX_COPYBREAK]		= "tx-copybreak",
+	[ETHTOOL_TX_COPYBREAK_BUF_SIZE] = "tx-buf-size",
 	[ETHTOOL_PFC_PREVENTION_TOUT]	= "pfc-prevention-tout",
 };
 
@@ -5047,6 +5048,11 @@ static struct ethtool_tunable_info tunables_info[] = {
 	  .t_type_id	= ETHTOOL_TUNABLE_U16,
 	  .size		= sizeof(u16),
 	  .type		= CMDL_U16,
+	},
+	{ .t_id         = ETHTOOL_TX_COPYBREAK_BUF_SIZE,
+	  .t_type_id    = ETHTOOL_TUNABLE_U32,
+	  .size         = sizeof(u32),
+	  .type         = CMDL_U32,
 	},
 };
 #define TUNABLES_INFO_SIZE	ARRAY_SIZE(tunables_info)
@@ -5724,6 +5730,7 @@ static const struct option args[] = {
 			  "		[ rx-mini N ]\n"
 			  "		[ rx-jumbo N ]\n"
 			  "		[ tx N ]\n"
+			  "             [ rx-buf-len N]\n"
 	},
 	{
 		.opts	= "-k|--show-features|--show-offload",
@@ -5960,6 +5967,7 @@ static const struct option args[] = {
 		.help	= "Get tunable",
 		.xhelp	= "		[ rx-copybreak ]\n"
 			  "		[ tx-copybreak ]\n"
+			  "		[ tx-buf-size ]\n"
 			  "		[ pfc-precention-tout ]\n"
 	},
 	{
@@ -5968,6 +5976,7 @@ static const struct option args[] = {
 		.help	= "Set tunable",
 		.xhelp	= "		[ rx-copybreak N]\n"
 			  "		[ tx-copybreak N]\n"
+			  "		[ tx-buf-size N]\n"
 			  "		[ pfc-precention-tout N]\n"
 	},
 	{
@@ -6037,6 +6046,18 @@ static const struct option args[] = {
 		.opts	= "--show-tunnels",
 		.nlfunc	= nl_gtunnels,
 		.help	= "Show NIC tunnel offload information",
+	},
+	{
+		.opts	= "--show-module",
+		.json	= true,
+		.nlfunc	= nl_gmodule,
+		.help	= "Show transceiver module settings",
+	},
+	{
+		.opts	= "--set-module",
+		.nlfunc	= nl_smodule,
+		.help	= "Set transceiver module settings",
+		.xhelp	= "		[ power-mode-policy high|auto ]\n"
 	},
 	{
 		.opts	= "-h|--help",

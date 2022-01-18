@@ -43,6 +43,8 @@ int nl_gfec(struct cmd_context *ctx);
 int nl_sfec(struct cmd_context *ctx);
 bool nl_gstats_chk(struct cmd_context *ctx);
 int nl_gstats(struct cmd_context *ctx);
+int nl_gmodule(struct cmd_context *ctx);
+int nl_smodule(struct cmd_context *ctx);
 int nl_monitor(struct cmd_context *ctx);
 int nl_getmodule(struct cmd_context *ctx);
 
@@ -110,6 +112,8 @@ nl_get_eeprom_page(struct cmd_context *ctx __maybe_unused,
 #define nl_gstats_chk		NULL
 #define nl_gstats		NULL
 #define nl_getmodule		NULL
+#define nl_gmodule		NULL
+#define nl_smodule		NULL
 
 #endif /* ETHTOOL_ENABLE_NETLINK */
 

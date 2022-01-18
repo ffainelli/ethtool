@@ -593,6 +593,7 @@ static const char *const names_link_ext_state[] = {
 	[ETHTOOL_LINK_EXT_STATE_CALIBRATION_FAILURE]	= "Calibration failure",
 	[ETHTOOL_LINK_EXT_STATE_POWER_BUDGET_EXCEEDED]	= "Power budget exceeded",
 	[ETHTOOL_LINK_EXT_STATE_OVERHEAT]		= "Overheat",
+	[ETHTOOL_LINK_EXT_STATE_MODULE]			= "Module",
 };
 
 static const char *const names_autoneg_link_ext_substate[] = {
@@ -652,6 +653,11 @@ static const char *const names_cable_issue_link_ext_substate[] = {
 		"Cable test failure",
 };
 
+static const char *const names_module_link_ext_substate[] = {
+	[ETHTOOL_LINK_EXT_SUBSTATE_MODULE_CMIS_NOT_READY]	=
+		"CMIS module is not in ModuleReady state",
+};
+
 static const char *link_ext_substate_get(uint8_t link_ext_state_val, uint8_t link_ext_substate_val)
 {
 	switch (link_ext_state_val) {
@@ -674,6 +680,10 @@ static const char *link_ext_substate_get(uint8_t link_ext_state_val, uint8_t lin
 	case ETHTOOL_LINK_EXT_STATE_CABLE_ISSUE:
 		return get_enum_string(names_cable_issue_link_ext_substate,
 				       ARRAY_SIZE(names_cable_issue_link_ext_substate),
+				       link_ext_substate_val);
+	case ETHTOOL_LINK_EXT_STATE_MODULE:
+		return get_enum_string(names_module_link_ext_substate,
+				       ARRAY_SIZE(names_module_link_ext_substate),
 				       link_ext_substate_val);
 	default:
 		return NULL;
