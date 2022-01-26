@@ -5734,6 +5734,7 @@ static const struct option args[] = {
 	},
 	{
 		.opts	= "-k|--show-features|--show-offload",
+		.json	= true,
 		.func	= do_gfeatures,
 		.nlfunc	= nl_gfeatures,
 		.help	= "Get state of protocol offload and other features"
