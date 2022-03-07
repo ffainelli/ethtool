@@ -5097,6 +5097,7 @@ static int do_stunable(struct cmd_context *ctx)
 		ret = send_ioctl(ctx, tuna);
 		if (ret) {
 			perror(tunable_strings[tuna->id]);
+			free(tuna);
 			return ret;
 		}
 		free(tuna);
@@ -5174,6 +5175,7 @@ static int do_gtunable(struct cmd_context *ctx)
 			ret = send_ioctl(ctx, tuna);
 			if (ret) {
 				fprintf(stderr, "%s: Cannot get tunable\n", ts);
+				free(tuna);
 				return ret;
 			}
 			print_tunable(tuna);
