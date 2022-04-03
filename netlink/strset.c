@@ -147,10 +147,10 @@ static int strset_reply_cb(const struct nlmsghdr *nlhdr, void *data)
 				   devname);
 		if (ret < 0)
 			return MNL_CB_OK;
-		nlctx->devname = devname;
+		if (ifindex && nlctx->filter_devname &&
+		    strncmp(devname, nlctx->filter_devname, ALTIFNAMSIZ))
+			return MNL_CB_OK;
 	}
-	if (ifindex && !dev_ok(nlctx))
-		return MNL_CB_OK;
 
 	if (ifindex) {
 		struct perdev_strings *perdev;
