@@ -1,3 +1,12 @@
+Version 5.17 - April 4, 2022
+	* Feature: transceiver module power mode (--set-module)
+	* Feature: transceiver module extended state (--show-module)
+	* Feature: get/set rx buffer length (-g and -G)
+	* Feature: tx copybreak buffer size (--get-tunable and --set-tunable)
+	* Feature: JSON output for features (-k)
+	* Feature: support OSFP transceiver modules (-m)
+	* Fix: add missing free() calls (--get-tunable and --set-tunable)
+
 Version 5.16 - January 19, 2022
 	* Feature: use memory maps for module EEPROM parsing (-m)
 	* Feature: show CMIS diagnostic information (-m)
