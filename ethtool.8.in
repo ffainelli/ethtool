@@ -1426,7 +1426,7 @@ Sub command to apply. The supported sub commands include --show-coalesce and
 --coalesce.
 .RE
 .TP
-q.B \-\-cable\-test
+.B \-\-cable\-test
 Perform a cable test and report the results. What results are returned depends
 on the capabilities of the network interface. Typically open pairs and shorted
 pairs can be reported, along with pairs being O.K. When a fault is detected
