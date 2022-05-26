@@ -199,6 +199,7 @@ ethtool \- query or control network driver and hardware settings
 .BN rx\-jumbo
 .BN tx
 .BN rx\-buf\-len
+.BN cqe\-size
 .HP
 .B ethtool \-i|\-\-driver
 .I devname
@@ -573,6 +574,9 @@ Changes the number of ring entries for the Tx ring.
 .TP
 .BI rx\-buf\-len \ N
 Changes the size of a buffer in the Rx ring.
+.TP
+.BI cqe\-size \ N
+Changes the size of completion queue event.
 .RE
 .TP
 .B \-i \-\-driver
