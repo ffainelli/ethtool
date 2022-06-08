@@ -5567,7 +5567,7 @@ static int do_gfec(struct cmd_context *ctx)
 	}
 
 	fprintf(stdout, "FEC parameters for %s:\n", ctx->devname);
-	fprintf(stdout, "Configured FEC encodings:");
+	fprintf(stdout, "Supported/Configured FEC encodings:");
 	dump_fec(feccmd.fec);
 	fprintf(stdout, "\n");
 

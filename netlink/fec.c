@@ -153,7 +153,7 @@ int fec_reply_cb(const struct nlmsghdr *nlhdr, void *data)
 	print_string(PRINT_ANY, "ifname", "FEC parameters for %s:\n",
 		     nlctx->devname);
 
-	open_json_array("config", "Configured FEC encodings:");
+	open_json_array("config", "Supported/Configured FEC encodings:");
 	fa = tb[ETHTOOL_A_FEC_AUTO] && mnl_attr_get_u8(tb[ETHTOOL_A_FEC_AUTO]);
 	if (fa)
 		print_string(PRINT_ANY, NULL, " %s", "Auto");
