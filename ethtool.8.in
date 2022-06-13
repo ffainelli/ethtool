@@ -200,6 +200,7 @@ ethtool \- query or control network driver and hardware settings
 .BN tx
 .BN rx\-buf\-len
 .BN cqe\-size
+.BN tx\-push
 .HP
 .B ethtool \-i|\-\-driver
 .I devname
@@ -577,6 +578,9 @@ Changes the size of a buffer in the Rx ring.
 .TP
 .BI cqe\-size \ N
 Changes the size of completion queue event.
+.TP
+.BI tx\-push \ on|off
+Specifies whether TX push should be enabled.
 .RE
 .TP
 .B \-i \-\-driver

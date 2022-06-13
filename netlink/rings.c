@@ -48,6 +48,7 @@ int rings_reply_cb(const struct nlmsghdr *nlhdr, void *data)
 	show_u32(tb[ETHTOOL_A_RINGS_TX], "TX:\t\t");
 	show_u32(tb[ETHTOOL_A_RINGS_RX_BUF_LEN], "RX Buf Len:\t\t");
 	show_u32(tb[ETHTOOL_A_RINGS_CQE_SIZE], "CQE Size:\t\t");
+	show_bool("tx-push", "TX Push:\t%s\n", tb[ETHTOOL_A_RINGS_TX_PUSH]);
 
 	return MNL_CB_OK;
 }
@@ -110,6 +111,12 @@ static const struct param_parser sring_params[] = {
 		.arg            = "cqe-size",
 		.type           = ETHTOOL_A_RINGS_CQE_SIZE,
 		.handler        = nl_parse_direct_u32,
+		.min_argc       = 1,
+	},
+	{
+		.arg            = "tx-push",
+		.type           = ETHTOOL_A_RINGS_TX_PUSH,
+		.handler        = nl_parse_u8bool,
 		.min_argc       = 1,
 	},
 	{}
