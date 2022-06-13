@@ -1,3 +1,9 @@
+Version 5.18 - June 14, 2022
+	* Feature: get/set cqe size (-g and -G)
+	* Fix: fix typo in man page
+	* Fix: fix help text alignment
+	* Fix: improve attribute label (--show-fec)
+
 Version 5.17 - April 4, 2022
 	* Feature: transceiver module power mode (--set-module)
 	* Feature: transceiver module extended state (--show-module)
