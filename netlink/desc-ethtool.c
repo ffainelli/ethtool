@@ -128,6 +128,12 @@ static const struct pretty_nla_desc __privflags_desc[] = {
 	NLATTR_DESC_NESTED(ETHTOOL_A_PRIVFLAGS_FLAGS, bitset),
 };
 
+static const char *__rings_tcp_data_split_names[] = {
+	[ETHTOOL_TCP_DATA_SPLIT_UNKNOWN]	= "ETHTOOL_TCP_DATA_SPLIT_UNKNOWN",
+	[ETHTOOL_TCP_DATA_SPLIT_DISABLED]	= "ETHTOOL_TCP_DATA_SPLIT_DISABLED",
+	[ETHTOOL_TCP_DATA_SPLIT_ENABLED]	= "ETHTOOL_TCP_DATA_SPLIT_ENABLED",
+};
+
 static const struct pretty_nla_desc __rings_desc[] = {
 	NLATTR_DESC_INVALID(ETHTOOL_A_RINGS_UNSPEC),
 	NLATTR_DESC_NESTED(ETHTOOL_A_RINGS_HEADER, header),
@@ -139,6 +145,9 @@ static const struct pretty_nla_desc __rings_desc[] = {
 	NLATTR_DESC_U32(ETHTOOL_A_RINGS_RX_MINI),
 	NLATTR_DESC_U32(ETHTOOL_A_RINGS_RX_JUMBO),
 	NLATTR_DESC_U32(ETHTOOL_A_RINGS_TX),
+	NLATTR_DESC_U32(ETHTOOL_A_RINGS_RX_BUF_LEN),
+	NLATTR_DESC_U8_ENUM(ETHTOOL_A_RINGS_TCP_DATA_SPLIT, rings_tcp_data_split),
+	NLATTR_DESC_U32(ETHTOOL_A_RINGS_CQE_SIZE),
 };
 
 static const struct pretty_nla_desc __channels_desc[] = {
