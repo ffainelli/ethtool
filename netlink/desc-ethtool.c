@@ -148,6 +148,7 @@ static const struct pretty_nla_desc __rings_desc[] = {
 	NLATTR_DESC_U32(ETHTOOL_A_RINGS_RX_BUF_LEN),
 	NLATTR_DESC_U8_ENUM(ETHTOOL_A_RINGS_TCP_DATA_SPLIT, rings_tcp_data_split),
 	NLATTR_DESC_U32(ETHTOOL_A_RINGS_CQE_SIZE),
+	NLATTR_DESC_BOOL(ETHTOOL_A_RINGS_TX_PUSH),
 };
 
 static const struct pretty_nla_desc __channels_desc[] = {
