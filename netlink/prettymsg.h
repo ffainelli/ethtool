@@ -31,6 +31,7 @@ enum pretty_nla_format {
 	NLA_BOOL,
 	NLA_NESTED,
 	NLA_ARRAY,
+	NLA_U8_ENUM,
 	NLA_U32_ENUM,
 };
 
@@ -93,6 +94,13 @@ struct pretty_nlmsg_desc {
 		.name = #_name, \
 		.children = __ ## _children_desc ## _desc, \
 		.n_children = 1, \
+	}
+#define NLATTR_DESC_U8_ENUM(_name, _names_table) \
+	[_name] = { \
+		.format = NLA_U8_ENUM, \
+		.name = #_name, \
+		.names = __ ## _names_table ## _names, \
+		.n_children = ARRAY_SIZE(__ ## _names_table ## _names), \
 	}
 #define NLATTR_DESC_U32_ENUM(_name, _names_table) \
 	[_name] = { \
