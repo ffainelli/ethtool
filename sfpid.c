@@ -13,8 +13,9 @@
 #include "sff-common.h"
 #include "netlink/extapi.h"
 
-#define SFF8079_PAGE_SIZE	0x80
-#define SFF8079_I2C_ADDRESS_LOW	0x50
+#define SFF8079_PAGE_SIZE		0x80
+#define SFF8079_I2C_ADDRESS_LOW		0x50
+#define SFF8079_I2C_ADDRESS_HIGH	0x51
 
 static void sff8079_show_identifier(const __u8 *id)
 {
@@ -450,18 +451,55 @@ void sff8079_show_all_ioctl(const __u8 *id)
 	sff8079_show_all_common(id);
 }
 
-int sff8079_show_all_nl(struct cmd_context *ctx)
+static int sff8079_get_eeprom_page(struct cmd_context *ctx, u8 i2c_address,
+				   __u8 *buf)
 {
 	struct ethtool_module_eeprom request = {
 		.length = SFF8079_PAGE_SIZE,
-		.i2c_address = SFF8079_I2C_ADDRESS_LOW,
+		.i2c_address = i2c_address,
 	};
 	int ret;
 
 	ret = nl_get_eeprom_page(ctx, &request);
-	if (ret < 0)
-		return ret;
-	sff8079_show_all_common(request.data);
+	if (!ret)
+		memcpy(buf, request.data, SFF8079_PAGE_SIZE);
 
-	return 0;
+	return ret;
+}
+
+int sff8079_show_all_nl(struct cmd_context *ctx)
+{
+	u8 *buf;
+	int ret;
+
+	/* The SFF-8472 parser expects a single buffer that contains the
+	 * concatenation of the first 256 bytes from addresses A0h and A2h,
+	 * respectively.
+	 */
+	buf = calloc(1, ETH_MODULE_SFF_8472_LEN);
+	if (!buf)
+		return -ENOMEM;
+
+	/* Read A0h page */
+	ret = sff8079_get_eeprom_page(ctx, SFF8079_I2C_ADDRESS_LOW, buf);
+	if (ret)
+		goto out;
+
+	sff8079_show_all_common(buf);
+
+	/* Finish if A2h page is not present */
+	if (!(buf[92] & (1 << 6)))
+		goto out;
+
+	/* Read A2h page */
+	ret = sff8079_get_eeprom_page(ctx, SFF8079_I2C_ADDRESS_HIGH,
+				      buf + ETH_MODULE_SFF_8079_LEN);
+	if (ret)
+		goto out;
+
+	sff8472_show_all(buf);
+out:
+	free(buf);
+
+	return ret;
 }
