@@ -412,4 +412,7 @@ int igc_dump_regs(struct ethtool_drvinfo *info, struct ethtool_regs *regs);
 /* Broadcom Ethernet Controller */
 int bnxt_dump_regs(struct ethtool_drvinfo *info, struct ethtool_regs *regs);
 
+/* TI CPSW Ethernet Switch */
+int cpsw_dump_regs(struct ethtool_drvinfo *info, struct ethtool_regs *regs);
+
 #endif /* ETHTOOL_INTERNAL_H__ */
