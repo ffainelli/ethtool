@@ -1129,6 +1129,7 @@ static const struct {
 	{ "fec", fec_dump_regs },
 	{ "igc", igc_dump_regs },
 	{ "bnxt_en", bnxt_dump_regs },
+	{ "lan743x", lan743x_dump_regs },
 };
 #endif
 
