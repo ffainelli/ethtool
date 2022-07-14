@@ -31,3 +31,4 @@ test-*.trs
 .*.swp
 *.patch
 .dirstamp
+tags
