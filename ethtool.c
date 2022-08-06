@@ -1130,6 +1130,7 @@ static const struct {
 	{ "igc", igc_dump_regs },
 	{ "bnxt_en", bnxt_dump_regs },
 	{ "cpsw-switch", cpsw_dump_regs },
+	{ "lan743x", lan743x_dump_regs },
 };
 #endif
 
