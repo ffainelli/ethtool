@@ -3529,11 +3529,15 @@ static int do_seeprom(struct cmd_context *ctx)
 		return 74;
 	}
 
-	if (seeprom_value_seen)
+	if (seeprom_value_seen && !seeprom_length_seen)
 		seeprom_length = 1;
-
-	if (!seeprom_length_seen)
+	else if (!seeprom_length_seen)
 		seeprom_length = drvinfo.eedump_len;
+
+	if (seeprom_value_seen && (seeprom_length != 1)) {
+		fprintf(stderr, "value requires length 1\n");
+		return 1;
+	}
 
 	if (drvinfo.eedump_len < seeprom_offset + seeprom_length) {
 		fprintf(stderr, "offset & length out of bounds\n");
