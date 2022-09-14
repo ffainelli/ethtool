@@ -1193,8 +1193,9 @@ static int linkmodes_reply_advert_all_cb(const struct nlmsghdr *nlhdr,
 }
 
 /* For compatibility reasons with ioctl-based ethtool, when "autoneg on" is
- * specified without "advertise", "speed" and "duplex", we need to query the
- * supported link modes from the kernel and advertise all the "real" ones.
+ * specified without "advertise", "speed", "duplex" and "lanes", we need to
+ * query the supported link modes from the kernel and advertise all the "real"
+ * ones.
  */
 static int nl_sset_compat_linkmodes(struct nl_context *nlctx,
 				    struct nl_msg_buff *msgbuff)
@@ -1208,7 +1209,8 @@ static int nl_sset_compat_linkmodes(struct nl_context *nlctx,
 	if (ret < 0)
 		return ret;
 	if (!tb[ETHTOOL_A_LINKMODES_AUTONEG] || tb[ETHTOOL_A_LINKMODES_OURS] ||
-	    tb[ETHTOOL_A_LINKMODES_SPEED] || tb[ETHTOOL_A_LINKMODES_DUPLEX])
+	    tb[ETHTOOL_A_LINKMODES_SPEED] || tb[ETHTOOL_A_LINKMODES_DUPLEX] ||
+	    tb[ETHTOOL_A_LINKMODES_LANES])
 		return 0;
 	if (!mnl_attr_get_u8(tb[ETHTOOL_A_LINKMODES_AUTONEG]))
 		return 0;
