@@ -1,9 +1,9 @@
 Version 5.19 - August 22, 2022
 	* Feature: get/set tx push (-g and -G)
-	* Feature: register dump support for TI CPSW
-	* Feature: register dump support for lan743x chipset
-	* Fix: fix missing sff-8472 output in netlink path
-	* Fix: fix EEPROM byte write
+	* Feature: register dump support for TI CPSW (-d)
+	* Feature: register dump support for lan743x chipset (-d)
+	* Fix: fix missing sff-8472 output in netlink path (-m)
+	* Fix: fix EEPROM byte write (-E)
 
 Version 5.18 - June 14, 2022
 	* Feature: get/set cqe size (-g and -G)
