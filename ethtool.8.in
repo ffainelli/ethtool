@@ -79,7 +79,7 @@
 .\"	\(*NC - Network Classifier type values
 .\"
 .ds NC \fBether\fP|\fBip4\fP|\fBtcp4\fP|\fBudp4\fP|\fBsctp4\fP|\fBah4\fP|\fBesp4\fP|\fBip6\fP|\fBtcp6\fP|\fBudp6\fP|\fBah6\fP|\fBesp6\fP|\fBsctp6\fP
-..
+.
 .\"
 .\" Start URL.
 .de UR
@@ -249,7 +249,7 @@ ethtool \- query or control network driver and hardware settings
 .RB [\fBeth\-phy\fP]
 .RB [\fBeth\-mac\fP]
 .RB [\fBeth\-ctrl\fP]
-.RN [\fBrmon\fP]
+.RB [\fBrmon\fP]
 .RB ]
 .HP
 .B ethtool \-\-phy\-statistics
@@ -695,7 +695,7 @@ naming of NIC- and driver-specific statistics across vendors.
 .RS 4
 .TP
 .B \fB\-\-all\-groups
-.E
+.RE
 .TP
 .B \fB\-\-groups [\fBeth\-phy\fP] [\fBeth\-mac\fP] [\fBeth\-ctrl\fP] [\fBrmon\fP]
 Request groups of standard device statistics.
