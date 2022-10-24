@@ -776,6 +776,7 @@ nokeep;
 lB	l	lB.
 0x001	10baseT Half
 0x002	10baseT Full
+0x100000000000000000000000	10baseT1L Full
 0x004	100baseT Half
 0x008	100baseT Full
 0x80000000000000000	100baseT1 Full
