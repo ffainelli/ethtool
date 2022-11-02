@@ -63,7 +63,7 @@ int bnxt_dump_regs(struct ethtool_drvinfo *info __maybe_unused, struct ethtool_r
 		return 0;
 
 	if (regs->len < (BNXT_PXP_REG_LEN + BNXT_PCIE_STATS_LEN)) {
-		fprintf(stdout, "Length is too short, expected 0x%lx\n",
+		fprintf(stdout, "Length is too short, expected 0x%zx\n",
 			BNXT_PXP_REG_LEN + BNXT_PCIE_STATS_LEN);
 		return -1;
 	}
