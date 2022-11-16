@@ -1134,6 +1134,8 @@ static const struct {
 	{ "bnxt_en", bnxt_dump_regs },
 	{ "cpsw-switch", cpsw_dump_regs },
 	{ "lan743x", lan743x_dump_regs },
+	{ "fsl_enetc", fsl_enetc_dump_regs },
+	{ "fsl_enetc_vf", fsl_enetc_dump_regs },
 };
 #endif
 

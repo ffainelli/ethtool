@@ -406,6 +406,9 @@ int dsa_dump_regs(struct ethtool_drvinfo *info, struct ethtool_regs *regs);
 /* i.MX Fast Ethernet Controller */
 int fec_dump_regs(struct ethtool_drvinfo *info, struct ethtool_regs *regs);
 
+/* Freescale/NXP ENETC Ethernet Controller */
+int fsl_enetc_dump_regs(struct ethtool_drvinfo *info, struct ethtool_regs *regs);
+
 /* Intel(R) Ethernet Controller I225-LM/I225-V adapter family */
 int igc_dump_regs(struct ethtool_drvinfo *info, struct ethtool_regs *regs);
 

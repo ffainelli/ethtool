@@ -13,8 +13,8 @@ ethtool_SOURCES = ethtool.c uapi/linux/ethtool.h internal.h \
 if ETHTOOL_ENABLE_PRETTY_DUMP
 ethtool_SOURCES += \
 		  amd8111e.c de2104x.c dsa.c e100.c e1000.c et131x.c igb.c	\
-		  fec.c fec_8xx.c ibm_emac.c ixgb.c ixgbe.c natsemi.c	\
-		  pcnet32.c realtek.c tg3.c marvell.c vioc.c	\
+		  fec.c fec_8xx.c fsl_enetc.c ibm_emac.c ixgb.c ixgbe.c \
+		  natsemi.c pcnet32.c realtek.c tg3.c marvell.c vioc.c \
 		  smsc911x.c at76c50x-usb.c sfc.c stmmac.c	\
 		  sff-common.c sff-common.h sfpid.c sfpdiag.c	\
 		  ixgbevf.c tse.c vmxnet3.c qsfp.c qsfp.h fjes.c lan78xx.c \
