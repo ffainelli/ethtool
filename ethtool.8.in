@@ -695,7 +695,6 @@ naming of NIC- and driver-specific statistics across vendors.
 .RS 4
 .TP
 .B \fB\-\-all\-groups
-.RE
 .TP
 .B \fB\-\-groups [\fBeth\-phy\fP] [\fBeth\-mac\fP] [\fBeth\-ctrl\fP] [\fBrmon\fP]
 Request groups of standard device statistics.
