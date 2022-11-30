@@ -20,6 +20,7 @@ int rings_reply_cb(const struct nlmsghdr *nlhdr, void *data)
 	const struct nlattr *tb[ETHTOOL_A_RINGS_MAX + 1] = {};
 	DECLARE_ATTR_TB_INFO(tb);
 	struct nl_context *nlctx = data;
+	unsigned char tcp_hds;
 	bool silent;
 	int err_ret;
 	int ret;
@@ -49,6 +50,24 @@ int rings_reply_cb(const struct nlmsghdr *nlhdr, void *data)
 	show_u32(tb[ETHTOOL_A_RINGS_RX_BUF_LEN], "RX Buf Len:\t\t");
 	show_u32(tb[ETHTOOL_A_RINGS_CQE_SIZE], "CQE Size:\t\t");
 	show_bool("tx-push", "TX Push:\t%s\n", tb[ETHTOOL_A_RINGS_TX_PUSH]);
+
+	tcp_hds = tb[ETHTOOL_A_RINGS_TCP_DATA_SPLIT] ?
+		mnl_attr_get_u8(tb[ETHTOOL_A_RINGS_TCP_DATA_SPLIT]) : 0;
+	printf("TCP data split:\t");
+	switch (tcp_hds) {
+	case ETHTOOL_TCP_DATA_SPLIT_UNKNOWN:
+		printf("n/a\n");
+		break;
+	case ETHTOOL_TCP_DATA_SPLIT_DISABLED:
+		printf("off\n");
+		break;
+	case ETHTOOL_TCP_DATA_SPLIT_ENABLED:
+		printf("on\n");
+		break;
+	default:
+		printf("unknown(%d)\n", tcp_hds);
+		break;
+	}
 
 	return MNL_CB_OK;
 }
