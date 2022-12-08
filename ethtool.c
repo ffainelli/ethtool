@@ -31,6 +31,7 @@
 
 #include "internal.h"
 #include <string.h>
+#include <strings.h>
 #include <stdlib.h>
 #include <sys/stat.h>
 #include <stdio.h>
@@ -46,6 +47,7 @@
 #include <netinet/in.h>
 #include <arpa/inet.h>
 
+#include <linux/ioctl.h>
 #include <linux/sockios.h>
 #include <linux/netlink.h>
 
@@ -301,7 +303,7 @@ static void parse_generic_cmdline(struct cmd_context *ctx,
 				case CMDL_IP4: {
 					u32 *p = info[idx].wanted_val;
 					struct in_addr in;
-					if (!inet_aton(argp[i], &in))
+					if (!inet_pton(AF_INET, argp[i], &in))
 						exit_bad_args();
 					*p = in.s_addr;
 					break;

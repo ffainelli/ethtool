@@ -21,7 +21,7 @@
 #include <unistd.h>
 #include <endian.h>
 #include <sys/ioctl.h>
-#include <net/if.h>
+#include <linux/if.h>
 
 #include "json_writer.h"
 #include "json_print.h"

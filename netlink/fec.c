@@ -9,6 +9,7 @@
 #include <ctype.h>
 #include <inttypes.h>
 #include <string.h>
+#include <strings.h>
 #include <stdio.h>
 
 #include "../internal.h"
