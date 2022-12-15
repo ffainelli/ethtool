@@ -38,17 +38,18 @@ int rings_reply_cb(const struct nlmsghdr *nlhdr, void *data)
 		putchar('\n');
 	printf("Ring parameters for %s:\n", nlctx->devname);
 	printf("Pre-set maximums:\n");
-	show_u32(tb[ETHTOOL_A_RINGS_RX_MAX], "RX:\t\t");
-	show_u32(tb[ETHTOOL_A_RINGS_RX_MINI_MAX], "RX Mini:\t");
-	show_u32(tb[ETHTOOL_A_RINGS_RX_JUMBO_MAX], "RX Jumbo:\t");
-	show_u32(tb[ETHTOOL_A_RINGS_TX_MAX], "TX:\t\t");
+	show_u32("rx-max", "RX:\t\t", tb[ETHTOOL_A_RINGS_RX_MAX]);
+	show_u32("rx-mini-max", "RX Mini:\t", tb[ETHTOOL_A_RINGS_RX_MINI_MAX]);
+	show_u32("rx-jumbo-max", "RX Jumbo:\t",
+		 tb[ETHTOOL_A_RINGS_RX_JUMBO_MAX]);
+	show_u32("tx-max", "TX:\t\t", tb[ETHTOOL_A_RINGS_TX_MAX]);
 	printf("Current hardware settings:\n");
-	show_u32(tb[ETHTOOL_A_RINGS_RX], "RX:\t\t");
-	show_u32(tb[ETHTOOL_A_RINGS_RX_MINI], "RX Mini:\t");
-	show_u32(tb[ETHTOOL_A_RINGS_RX_JUMBO], "RX Jumbo:\t");
-	show_u32(tb[ETHTOOL_A_RINGS_TX], "TX:\t\t");
-	show_u32(tb[ETHTOOL_A_RINGS_RX_BUF_LEN], "RX Buf Len:\t\t");
-	show_u32(tb[ETHTOOL_A_RINGS_CQE_SIZE], "CQE Size:\t\t");
+	show_u32("rx", "RX:\t\t", tb[ETHTOOL_A_RINGS_RX]);
+	show_u32("rx-mini", "RX Mini:\t", tb[ETHTOOL_A_RINGS_RX_MINI]);
+	show_u32("rx-jumbo", "RX Jumbo:\t", tb[ETHTOOL_A_RINGS_RX_JUMBO]);
+	show_u32("tx", "TX:\t\t", tb[ETHTOOL_A_RINGS_TX]);
+	show_u32("rx-buf-len", "RX Buf Len:\t", tb[ETHTOOL_A_RINGS_RX_BUF_LEN]);
+	show_u32("cqe-size", "CQE Size:\t", tb[ETHTOOL_A_RINGS_CQE_SIZE]);
 	show_bool("tx-push", "TX Push:\t%s\n", tb[ETHTOOL_A_RINGS_TX_PUSH]);
 
 	tcp_hds = tb[ETHTOOL_A_RINGS_TCP_DATA_SPLIT] ?

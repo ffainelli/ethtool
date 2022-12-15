@@ -5696,6 +5696,7 @@ static const struct option args[] = {
 	},
 	{
 		.opts	= "-c|--show-coalesce",
+		.json	= true,
 		.func	= do_gcoalesce,
 		.nlfunc	= nl_gcoalesce,
 		.help	= "Show coalesce options"

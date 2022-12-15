@@ -37,15 +37,17 @@ int channels_reply_cb(const struct nlmsghdr *nlhdr, void *data)
 		putchar('\n');
 	printf("Channel parameters for %s:\n", nlctx->devname);
 	printf("Pre-set maximums:\n");
-	show_u32(tb[ETHTOOL_A_CHANNELS_RX_MAX], "RX:\t\t");
-	show_u32(tb[ETHTOOL_A_CHANNELS_TX_MAX], "TX:\t\t");
-	show_u32(tb[ETHTOOL_A_CHANNELS_OTHER_MAX], "Other:\t\t");
-	show_u32(tb[ETHTOOL_A_CHANNELS_COMBINED_MAX], "Combined:\t");
+	show_u32("rx-max", "RX:\t\t", tb[ETHTOOL_A_CHANNELS_RX_MAX]);
+	show_u32("tx-max", "TX:\t\t", tb[ETHTOOL_A_CHANNELS_TX_MAX]);
+	show_u32("other-max", "Other:\t\t", tb[ETHTOOL_A_CHANNELS_OTHER_MAX]);
+	show_u32("combined-max", "Combined:\t",
+		 tb[ETHTOOL_A_CHANNELS_COMBINED_MAX]);
 	printf("Current hardware settings:\n");
-	show_u32(tb[ETHTOOL_A_CHANNELS_RX_COUNT], "RX:\t\t");
-	show_u32(tb[ETHTOOL_A_CHANNELS_TX_COUNT], "TX:\t\t");
-	show_u32(tb[ETHTOOL_A_CHANNELS_OTHER_COUNT], "Other:\t\t");
-	show_u32(tb[ETHTOOL_A_CHANNELS_COMBINED_COUNT], "Combined:\t");
+	show_u32("rx", "RX:\t\t", tb[ETHTOOL_A_CHANNELS_RX_COUNT]);
+	show_u32("tx", "TX:\t\t", tb[ETHTOOL_A_CHANNELS_TX_COUNT]);
+	show_u32("other", "Other:\t\t", tb[ETHTOOL_A_CHANNELS_OTHER_COUNT]);
+	show_u32("combined", "Combined:\t",
+		 tb[ETHTOOL_A_CHANNELS_COMBINED_COUNT]);
 
 	return MNL_CB_OK;
 }
