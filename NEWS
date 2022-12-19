@@ -1,3 +1,11 @@
+Version 6.1 - December 19, 2022
+	* Feature: update link mode tables
+	* Feature: register dump for NXP ENETC driver (-d)
+	* Feature: report TCP header-data split (-g)
+	* Feature: support new message types in pretty print
+	* Fix: fix compiler warnings
+	* Fix: man page syntax fixes
+
 Version 6.0 - October 10, 2022
 	* Fix: advertisement modes autoselection by lanes (-s)
 
