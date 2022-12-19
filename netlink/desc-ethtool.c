@@ -77,6 +77,13 @@ static const struct pretty_nla_desc __linkinfo_desc[] = {
 	NLATTR_DESC_U8(ETHTOOL_A_LINKINFO_TRANSCEIVER),
 };
 
+static const char *__linkmodes_rate_matching_names[] = {
+	[RATE_MATCH_NONE]	= "RATE_MATCH_NONE",
+	[RATE_MATCH_PAUSE]	= "RATE_MATCH_PAUSE",
+	[RATE_MATCH_CRS]	= "RATE_MATCH_CRS",
+	[RATE_MATCH_OPEN_LOOP]	= "RATE_MATCH_OPEN_LOOP",
+};
+
 static const struct pretty_nla_desc __linkmodes_desc[] = {
 	NLATTR_DESC_INVALID(ETHTOOL_A_LINKMODES_UNSPEC),
 	NLATTR_DESC_NESTED(ETHTOOL_A_LINKMODES_HEADER, header),
@@ -88,6 +95,8 @@ static const struct pretty_nla_desc __linkmodes_desc[] = {
 	NLATTR_DESC_U8(ETHTOOL_A_LINKMODES_MASTER_SLAVE_CFG),
 	NLATTR_DESC_U8(ETHTOOL_A_LINKMODES_MASTER_SLAVE_STATE),
 	NLATTR_DESC_U32(ETHTOOL_A_LINKMODES_LANES),
+	NLATTR_DESC_U8_ENUM(ETHTOOL_A_LINKMODES_RATE_MATCHING,
+			    linkmodes_rate_matching),
 };
 
 static const struct pretty_nla_desc __linkstate_desc[] = {
@@ -409,6 +418,30 @@ static const struct pretty_nla_desc __module_desc[] = {
 	NLATTR_DESC_U8(ETHTOOL_A_MODULE_POWER_MODE),
 };
 
+static const char *__pse_admin_state_names[] = {
+	[ETHTOOL_PODL_PSE_ADMIN_STATE_UNKNOWN]	= "ETHTOOL_PODL_PSE_ADMIN_STATE_UNKNOWN",
+	[ETHTOOL_PODL_PSE_ADMIN_STATE_DISABLED]	= "ETHTOOL_PODL_PSE_ADMIN_STATE_DISABLED",
+	[ETHTOOL_PODL_PSE_ADMIN_STATE_ENABLED]	= "ETHTOOL_PODL_PSE_ADMIN_STATE_ENABLED",
+};
+
+static const char *__pse_pw_d_status_names[] = {
+	[ETHTOOL_PODL_PSE_PW_D_STATUS_UNKNOWN]		= "ETHTOOL_PODL_PSE_PW_D_STATUS_UNKNOWN",
+	[ETHTOOL_PODL_PSE_PW_D_STATUS_DISABLED]		= "ETHTOOL_PODL_PSE_PW_D_STATUS_DISABLED",
+	[ETHTOOL_PODL_PSE_PW_D_STATUS_SEARCHING]	= "ETHTOOL_PODL_PSE_PW_D_STATUS_SEARCHING",
+	[ETHTOOL_PODL_PSE_PW_D_STATUS_DELIVERING]	= "ETHTOOL_PODL_PSE_PW_D_STATUS_DELIVERING",
+	[ETHTOOL_PODL_PSE_PW_D_STATUS_SLEEP]		= "ETHTOOL_PODL_PSE_PW_D_STATUS_SLEEP",
+	[ETHTOOL_PODL_PSE_PW_D_STATUS_IDLE]		= "ETHTOOL_PODL_PSE_PW_D_STATUS_IDLE",
+	[ETHTOOL_PODL_PSE_PW_D_STATUS_ERROR]		= "ETHTOOL_PODL_PSE_PW_D_STATUS_ERROR",
+};
+
+static const struct pretty_nla_desc __pse_desc[] = {
+	NLATTR_DESC_INVALID(ETHTOOL_A_PSE_UNSPEC),
+	NLATTR_DESC_NESTED(ETHTOOL_A_PSE_HEADER, header),
+	NLATTR_DESC_U32_ENUM(ETHTOOL_A_PODL_PSE_ADMIN_STATE, pse_admin_state),
+	NLATTR_DESC_U32_ENUM(ETHTOOL_A_PODL_PSE_ADMIN_CONTROL, pse_admin_state),
+	NLATTR_DESC_U32_ENUM(ETHTOOL_A_PODL_PSE_PW_D_STATUS, pse_pw_d_status),
+};
+
 const struct pretty_nlmsg_desc ethnl_umsg_desc[] = {
 	NLMSG_DESC_INVALID(ETHTOOL_MSG_USER_NONE),
 	NLMSG_DESC(ETHTOOL_MSG_STRSET_GET, strset),
@@ -446,6 +479,8 @@ const struct pretty_nlmsg_desc ethnl_umsg_desc[] = {
 	NLMSG_DESC(ETHTOOL_MSG_PHC_VCLOCKS_GET, phc_vclocks),
 	NLMSG_DESC(ETHTOOL_MSG_MODULE_GET, module),
 	NLMSG_DESC(ETHTOOL_MSG_MODULE_SET, module),
+	NLMSG_DESC(ETHTOOL_MSG_PSE_GET, pse),
+	NLMSG_DESC(ETHTOOL_MSG_PSE_SET, pse),
 };
 
 const unsigned int ethnl_umsg_n_desc = ARRAY_SIZE(ethnl_umsg_desc);
@@ -488,6 +523,7 @@ const struct pretty_nlmsg_desc ethnl_kmsg_desc[] = {
 	NLMSG_DESC(ETHTOOL_MSG_PHC_VCLOCKS_GET_REPLY, phc_vclocks),
 	NLMSG_DESC(ETHTOOL_MSG_MODULE_GET_REPLY, module),
 	NLMSG_DESC(ETHTOOL_MSG_MODULE_NTF, module),
+	NLMSG_DESC(ETHTOOL_MSG_PSE_GET_REPLY, pse),
 };
 
 const unsigned int ethnl_kmsg_n_desc = ARRAY_SIZE(ethnl_kmsg_desc);
