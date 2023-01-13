@@ -237,7 +237,7 @@ int nl_parse_direct_m2cm(struct nl_context *nlctx, uint16_t type,
 			 struct nl_msg_buff *msgbuff, void *dest)
 {
 	const char *arg = *nlctx->argp;
-	float meters;
+	float meters = 0.0;
 	uint32_t cm;
 	int ret;
 
